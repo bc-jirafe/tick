@@ -1,0 +1,28 @@
+html, body {
+    background: white;
+}
+
+.tick-separator-scroll, 
+.tick-separator-placeholder {
+    margin: 0 ;
+    font-size: 0.8em;
+    color: rgba(255, 255, 255, 0);
+    width: 2%;
+    text-align: center;
+}
+.tick-separator-placeholder {
+    position: relative;
+}
+
+.rltm__cntr.rltm__cntr--revenue .tick-separator-active {
+    color: #84d48b;
+}
+.rltm__cntr.rltm__cntr--items-sold .tick-separator-active {
+    color: #f38063;
+}
+.rltm__cntr.rltm__cntr--orders .tick-separator-active {
+    color: #9566da;
+}
+.rltm__cntr.rltm__cntr--visits .tick-separator-active {
+    color: #f1b900;
+}
