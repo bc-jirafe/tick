@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+
+    <link href="../assets/css/final.css" type="text/css" rel="stylesheet" media="screen">
+    <link href="../assets/css/cust.css" type="text/css" rel="stylesheet" media="screen">
+    <script src="assets/js/libs/jquery.min.js" type="text/javascript"></script>
+    <script src="assets/js/libs/jquery.easing.js" type="text/javascript"></script>
+    <script src="../assets/js/tick.js" type="text/javascript"></script>
+   
+  </head>
+
+<style>
+
+.nextprev {
+    cursor: pointer;
+    font-size: 2em;
+    margin: 5px 20px;
+}
+
+.item{
+    font-size: 2em;
+    margin: 10px;
+    padding: 5px 5px;
+    font-weight: normal;
+        display: -webkit-inline-box;
+}
+
+
+.add{
+    border-radius: 3px;
+    background-color: #5fb5ff;
+    margin: 5px;
+    padding: 2px 5px;
+    cursor: pointer;
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.75);
+}
+
+
+.newitem{
+    margin: 0 0 0 20px;
+    height: 25px;
+    font-size: 1.2em;
+}
+
+</style>
+
+
+<body>
+
+  <div style='width: 60%;'>
+
+    <div class="wgt wgt__tikr">
+
+      <div class="tag tag--lg tag--ovfl">
+
+        <header class="tag__hdr tag__hdr--lg">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 156 48" style="enable-background:new 0 0 156 48" preserveAspectRatio="none"><path class="tag__fill" d="M0,3v42c0,1.7,1.3,3,3,3h137.4L156,24.2L140.2,0H3C1.3,0,0,1.3,0,3z"></path></svg>
+
+          <h6 class="tag__ttl tag__ttl--lg">Revenue</h6>
+        </header>
+
+        <div class="tag__dtl tag__dtl--clip">
+
+          <div class="rltm__cntr rltm__cntr--revenue">
+                  <span class="tick tick-scroll tick-active">167.006</span>
+                  <span class="zero-mask">
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                              <span class="tick-separator-scroll">.</span>
+                    <span class="tick-wheel">0</span>
+                  </span>
+
+                  <span class="curr-mask">
+                    <span class="tick-wheel">$</span>
+                  </span>
+           </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </br>
+  <div id='list'></div></b>
+  </br>
+  <span id='prev' class="nextprev">&lt;prev</span>
+  <span id='next' class="nextprev">next&gt;</span>  </br></br>
+
+   <input id='newitem' class='newitem' type='text' value='167.00'/> <span id='add' class='add'>add</span>
+
+</body>
+
+
+<script>
+$(document).ready(function(){
+
+  var results = $( '.tick' ).ticker(
+  {
+    delay       : 1000,
+    autostart   : false,
+  });  
+
+  var array = ['16700.6', '16708.7', '7', '167.008','16700', '1.7007', '167.00','16700', '167.09', '16.7008', '169.7008']
+  for(var j=0; j < array.length; ++j){
+    $ ('#list').append('<span class="item">' + array[j]+'</span>');
+  }
+
+
+  var i = 0
+  results[i].ticktest(array[i], true);
+  $("#value").text(array[i]);
+  $($ ('#list').children()[i]).css('font-weight', 'bold')
+
+  $("#prev").click(function(){
+    $($ ('#list').children()[i]).css('font-weight', 'normal')
+    i = (i > 0 ? --i : array.length-1);
+    results[0].ticktest(array[i], false);
+    $("#value").text(array[i]);
+    $($ ('#list').children()[i]).css('font-weight', 'bold')
+  });
+
+  $("#next").click(function(){
+    $($ ('#list').children()[i]).css('font-weight', 'normal')
+    i = (i == array.length-1 ? 0 : ++i);
+    results[0].ticktest(array[i], false);
+    $("#value").text(array[i]);
+    $ ('#list').children()[i]
+    $($ ('#list').children()[i]).css('font-weight', 'bold')
+  });
+
+
+  $("#add").click(function(){
+    array.push($("#newitem").val())
+    $ ('#list').append('<span class="item">' + array[array.length-1]+'</span>');
+    console.log(array[array.length-1])
+  });
+
+});
+</script>
+</html>
