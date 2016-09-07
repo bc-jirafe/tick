@@ -50,6 +50,9 @@
       separators    boolean   if true, all arbitrary characters inbetween digits are wrapped in seperated elements
                               if false, these characters are stripped out
       autostart     boolean   whether or not to start the ticker when instantiated
+      fixeddecimals int       force plugin to show permanent decimal separator and minimum 'fixeddecimals' number of decimal digits
+                              note: it is implemented for fixeddecimals<0 (no permanent decimal point) and fixeddecimals=2 only
+                              (for case when fixeddecimals=2 then if value=2 output will be 2.00, 2.3 -> 2.30, 2.34->2.34 2.345 -> 2.345)
   
     Events
   
@@ -68,7 +71,8 @@
       this.options = {
         delay: options.delay || 1000,
         separators: options.separators != null ? options.separators : false,
-        autostart: options.autostart != null ? options.autostart : true
+        autostart: options.autostart != null ? options.autostart : true,
+        fixeddecimals: options.fixeddecimals != null ? options.fixeddecimals : -1
       };
       this.increment = this.build_increment_callback(options.incremental);
       this.value = Number(this.element.html().replace(/[^\d.]/g, ''));
@@ -276,9 +280,18 @@
     };
 
     Tick_Scroll.prototype.render = function() {
-      var _nondigits_count, containers, digits, i, j, k, l, m, n, ref, ref1, ref2, ref3, ref4, results, separator_position;
-      if (!this.value) {
+      var _nondigits_count, containers, digits, i, j, k, l, m, n, o, ref, ref1, ref2, ref3, ref4, results, separator_position;
+      if (this.value == null) {
         return;
+      }
+      if (this.options.fixeddecimals > 0) {
+        this.value = String(this.value);
+        n = this.value.lastIndexOf('.');
+        if (n < 0) {
+          this.value += '.00';
+        } else if (this.value.length - n === 2) {
+          this.value += '0';
+        }
       }
       digits = String(this.value).split('');
       containers = this.element.children(':not(.tick-separator-placeholder)');
@@ -303,7 +316,7 @@
       this.update_separator_position(separator_position, this.element.parent().find('.zero-mask').children('.tick-separator-scroll'));
       i = 0;
       results = [];
-      for (k = n = 0, ref4 = containers.length + _nondigits_count; 0 <= ref4 ? n < ref4 : n > ref4; k = 0 <= ref4 ? ++n : --n) {
+      for (k = o = 0, ref4 = containers.length + _nondigits_count; 0 <= ref4 ? o < ref4 : o > ref4; k = 0 <= ref4 ? ++o : --o) {
         if (Number.isInteger(digits[k] / 1)) {
           this.update_container(containers[i], digits[k]);
           results.push(++i);

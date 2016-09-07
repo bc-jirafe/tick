@@ -46,6 +46,9 @@ $.fn.ticker = (options) ->
     separators    boolean   if true, all arbitrary characters inbetween digits are wrapped in seperated elements
                             if false, these characters are stripped out
     autostart     boolean   whether or not to start the ticker when instantiated
+    fixeddecimals int       force plugin to show permanent decimal separator and minimum 'fixeddecimals' number of decimal digits
+                            note: it is implemented for fixeddecimals<0 (no permanent decimal point) and fixeddecimals=2 only
+                            (for case when fixeddecimals=2 then if value=2 output will be 2.00, 2.3 -> 2.30, 2.34->2.34 2.345 -> 2.345)
 
   Events
 
@@ -64,7 +67,8 @@ class Tick
       delay     : options.delay or 1000
       separators: if options.separators? then options.separators else false
       autostart : if options.autostart?  then options.autostart  else true
-
+      fixeddecimals : if options.fixeddecimals?  then options.fixeddecimals  else -1
+        
     @increment = @build_increment_callback( options.incremental )
 
 
@@ -261,8 +265,17 @@ class Tick_Scroll extends Tick
 
 
   render: () ->
-    if !@value
+    if !@value?
       return
+
+    if @options.fixeddecimals > 0
+      @value = String( @value )
+      n = @value.lastIndexOf('.')
+      if n < 0
+        @value += '.00'
+      else if @value.length - n == 2 #implement for case when separator should be in options.fixeddecimals place
+        @value += '0'
+
     digits      = String( @value ).split( '' )
     containers  = @element.children( ':not(.tick-separator-placeholder)' )
 

@@ -7,12 +7,19 @@ html, body {
     margin: 0 ;
     font-size: 0.8em;
     color: rgba(255, 255, 255, 0);
-    width: 2%;
+    width: 2.4%;
     text-align: center;
-}
-.tick-separator-placeholder {
+    top: 4px;
+    text-indent: -2px;
     position: relative;
 }
+
+.curr-mask .tick-wheel,
+.tick-scroll .tick-wheel,
+.zero-mask .tick-wheel {
+    width: 10.4%;
+}
+
 
 .rltm__cntr.rltm__cntr--revenue .tick-separator-active {
     color: #84d48b;
