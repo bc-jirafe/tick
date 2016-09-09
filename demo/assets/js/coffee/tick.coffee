@@ -46,9 +46,6 @@ $.fn.ticker = (options) ->
     separators    boolean   if true, all arbitrary characters inbetween digits are wrapped in seperated elements
                             if false, these characters are stripped out
     autostart     boolean   whether or not to start the ticker when instantiated
-    fixeddecimals int       force plugin to show permanent decimal separator and minimum 'fixeddecimals' number of decimal digits
-                            note: it is implemented for fixeddecimals<0 (no permanent decimal point) and fixeddecimals=2 only
-                            (for case when fixeddecimals=2 then if value=2 output will be 2.00, 2.3 -> 2.30, 2.34->2.34 2.345 -> 2.345)
 
   Events
 
@@ -67,8 +64,7 @@ class Tick
       delay     : options.delay or 1000
       separators: if options.separators? then options.separators else false
       autostart : if options.autostart?  then options.autostart  else true
-      fixeddecimals : if options.fixeddecimals?  then options.fixeddecimals  else -1
-        
+
     @increment = @build_increment_callback( options.incremental )
 
 
@@ -260,54 +256,7 @@ class Tick_Flip extends Tick
 class Tick_Scroll extends Tick
 
   build_container: (i) ->
-    $( '<span class="tick-separator-placeholder">.</span><span class="tick-wheel"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span>' ).appendTo( @element )
-
-
-
-  render: () ->
-    if !@value?
-      return
-
-    if @options.fixeddecimals > 0
-      @value = String( @value )
-      n = @value.lastIndexOf('.')
-      if n < 0
-        @value += '.00'
-      else if @value.length - n == 2 #implement for case when separator should be in options.fixeddecimals place
-        @value += '0'
-
-    digits      = String( @value ).split( '' )
-    containers  = @element.children( ':not(.tick-separator-placeholder)' )
-
-    _nondigits_count = 0
-    separator_position = -1
-    for i in [0...digits.length]
-      if !Number.isInteger(digits[i] / 1)
-        ++_nondigits_count
-        #todo only one separator is supported currently
-        separator_position = digits.length - i - 1
-    
-
-
-    # add new containers for each digit that doesnt exist (if they do, just update them)
-    if digits.length > containers.length + _nondigits_count
-      for i in [0...(digits.length - _nondigits_count - containers.length)]
-        # insert the real digit at their designated position
-          containers.push( @build_container( i ))
-    else if digits.length < containers.length + _nondigits_count
-      for i in [(digits.length - _nondigits_count)...containers.length]
-        @element.children('.tick-separator-placeholder').last().remove();
-        @element.children('.tick-wheel').last().remove();
-
-    @update_separator_position separator_position, @element.parent().find('.zero-mask').children('.tick-separator-scroll')
-
-
-    # insert/update the corresponding digit into each container
-    i = 0
-    for k in [0...(containers.length+_nondigits_count)]
-      if Number.isInteger(digits[k] / 1)
-        @update_container( containers[i], digits[ k ])
-        ++i
+    $( '<span class="tick-wheel"><span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span></span>' ).appendTo( @element )
 
   update_container: (container, digit) ->
     elementHeight = $( container ).children().first().outerHeight( true )
@@ -316,18 +265,7 @@ class Tick_Scroll extends Tick
     else
       $( container ).css({ top: digit * -elementHeight })
 
-  update_separator_position: (position, separators) ->
-      for i in [0...separators.length]
-        # deactivate previous separator
-        $(separators[i]).removeClass("tick-separator-active");
-      # activate required separator
-      $(separators[separators.length-position]).addClass("tick-separator-active");
 
-  #DO NOT USE THIS in PRODUCTION, IT IS JUST for testing purposes
-  ticktest: (value, shouldempty) ->
-      if(shouldempty)
-        @element.empty();
-      @value = value;
-      @running = true;
-      @render();
+
+
 
