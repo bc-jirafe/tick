@@ -268,6 +268,10 @@
 
   })(Tick);
 
+  Number.isInteger = Number.isInteger || function(value) {
+    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+  };
+
   Tick_Scroll = (function(superClass) {
     extend(Tick_Scroll, superClass);
 
