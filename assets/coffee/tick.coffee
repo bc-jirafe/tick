@@ -254,8 +254,9 @@ class Tick_Flip extends Tick
     parts.eq( 2 ).html( digit )
 
 
-
-
+#polyfill Number.isInteger because IE11 doesn't support it
+Number.isInteger = Number.isInteger or (value) ->
+  typeof value == 'number' and isFinite(value) and Math.floor(value) == value
 
 class Tick_Scroll extends Tick
 
